@@ -1,0 +1,31 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>disable</Nullable>
+    <UseWindowsForms>true</UseWindowsForms>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AssemblyName>1ThaiAiCapture</AssemblyName>
+    <RootNamespace>ThaiAiCapture</RootNamespace>
+    
+    <!-- Metadata -->
+    <Title>1ThaiAi Capture</Title>
+    <Product>1ThaiAi Capture</Product>
+    <Description>Windows Utility Screen Capture by 1ThaiAi.com</Description>
+    <Company>1ThaiAi.com</Company>
+    <Copyright>Copyright © 2026 1ThaiAi.com</Copyright>
+    <Version>1.0.0.0</Version>
+    <FileVersion>1.0.0.0</FileVersion>
+    <AssemblyVersion>1.0.0.0</AssemblyVersion>
+
+    <!-- Single File Publish Properties -->
+    <PublishSingleFile>true</PublishSingleFile>
+    <SelfContained>true</SelfContained>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <IncludeNativeLibrariesForSelfExtract>true</IncludeNativeLibrariesForSelfExtract>
+    <EnableCompressionInSingleFile>true</EnableCompressionInSingleFile>
+  </PropertyGroup>
+
+</Project>

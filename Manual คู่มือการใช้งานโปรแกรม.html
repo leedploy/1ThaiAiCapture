@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>1ThaiAi Capture - คู่มือการใช้งาน / User Manual</title>
+  <style>
+    :root {
+      --bg-primary: #0f1117;
+      --bg-card: #181b24;
+      --bg-card-hover: #202431;
+      --accent: #00a8ff;
+      --accent-gradient: linear-gradient(135deg, #00a8ff 0%, #70a1ff 100%);
+      --text-main: #f1f2f6;
+      --text-muted: #a4b0be;
+      --border-color: #2f3542;
+      --success: #2ed573;
+      --danger: #ff4757;
+      --warning: #ffa502;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', -apple-system, BlinkMacSystemFont, 'Leelawadee UI', Roboto, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-primary);
+      color: var(--text-main);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 900px;
+      width: 100%;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      padding: 2.5rem 1.5rem;
+      background: var(--bg-card);
+      border-radius: 16px;
+      border: 1px solid var(--border-color);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
+      margin-bottom: 2rem;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: var(--accent-gradient);
+    }
+
+    .logo-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 6px 16px;
+      background: rgba(0, 168, 255, 0.1);
+      border: 1px solid rgba(0, 168, 255, 0.3);
+      border-radius: 20px;
+      color: var(--accent);
+      font-weight: bold;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    h1 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      background: linear-gradient(135deg, #ffffff 0%, #ced6e0 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .subtitle {
+      color: var(--text-muted);
+      font-size: 1.05rem;
+      margin-bottom: 1.5rem;
+    }
+
+    /* Language Switcher */
+    .lang-switcher {
+      display: inline-flex;
+      background: #0b0d13;
+      padding: 4px;
+      border-radius: 30px;
+      border: 1px solid var(--border-color);
+    }
+
+    .lang-btn {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      padding: 8px 18px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .lang-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      box-shadow: 0 2px 10px rgba(0, 168, 255, 0.4);
+    }
+
+    /* Section Cards */
+    .card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: 14px;
+      padding: 1.8rem;
+      margin-bottom: 1.8rem;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .card h2 {
+      font-size: 1.4rem;
+      margin-bottom: 1rem;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    /* Steps */
+    .step-list {
+      list-style: none;
+      counter-reset: step-counter;
+    }
+
+    .step-item {
+      position: relative;
+      padding-left: 3rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .step-item::before {
+      content: counter(step-counter);
+      counter-increment: step-counter;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 2rem;
+      height: 2rem;
+      background: rgba(0, 168, 255, 0.15);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+    }
+
+    /* Visual Toolbar Layout */
+    .toolbar-visual {
+      background: #0c0e14;
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin: 1.5rem 0;
+      text-align: center;
+    }
+
+    .toolbar-box {
+      display: inline-flex;
+      gap: 8px;
+      background: #1c1e26;
+      border: 1.5px solid var(--accent);
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: 0 4px 12px rgba(0, 168, 255, 0.25);
+    }
+
+    .tool-chip {
+      background: #323441;
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: bold;
+      color: #ffffff;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .tool-chip.blue { background: #0082e6; }
+    .tool-chip.green { background: #28a745; }
+    .tool-chip.purple { background: #6c5ce7; }
+    .tool-chip.red { background: #dc3545; }
+
+    /* Shortcuts Table */
+    .shortcut-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 12px;
+      margin-top: 1rem;
+    }
+
+    .shortcut-card {
+      background: #11131a;
+      border: 1px solid var(--border-color);
+      padding: 1rem;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    kbd {
+      background: #2f3542;
+      color: #ffffff;
+      padding: 4px 10px;
+      border-radius: 6px;
+      font-weight: bold;
+      font-family: monospace;
+      font-size: 0.9rem;
+      box-shadow: 0 2px 0 rgba(0, 0, 0, 0.4);
+      border: 1px solid #475266;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 2rem 0;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+    }
+
+    .footer a {
+      color: var(--accent);
+      text-decoration: none;
+      font-weight: bold;
+    }
+
+    .footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Language toggling logic */
+    .content-en { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  
+  <!-- Header -->
+  <div class="header">
+    <div class="logo-badge">
+      <span>🎯 1ThaiAi Capture</span>
+      <span>•</span>
+      <span>v1.0 Portable</span>
+    </div>
+    <h1 id="title">คู่มือการใช้งาน (User Manual)</h1>
+    <p class="subtitle" id="subtitle">โปรแกรมจับภาพหน้าจอ Windows อัจฉริยะ ใช้งานง่าย เบาหวิว ไม่กินแรม</p>
+    
+    <div class="lang-switcher">
+      <button class="lang-btn active" id="btn-th" onclick="setLang('th')">🇹🇭 ไทย</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">🇬🇧 English</button>
+    </div>
+  </div>
+
+  <!-- THAI CONTENT -->
+  <div id="lang-th" class="content-th">
+    
+    <!-- Features -->
+    <div class="card">
+      <h2>✨ จุดเด่นของโปรแกรม</h2>
+      <ul style="list-style: square; padding-left: 1.5rem; color: var(--text-muted);">
+        <li><strong style="color: var(--text-main);">ไฟล์เดียวจบ (Portable .exe):</strong> ไม่ต้องติดตั้ง ดับเบิลคลิกเปิดใช้งานได้ทันที</li>
+        <li><strong style="color: var(--text-main);">ไม่ดูดแรม ไม่กิน CPU (0% Idle):</strong> รันนิ่งๆ ใน System Tray ใช้แรมเพียง ~15 MB</li>
+        <li><strong style="color: var(--text-main);">ปุ่มลัด F1 อัจฉริยะ:</strong> ใช้ Low-Level Keyboard Hook ป้องกันไม่ให้ชนกับระบบ Bing Help ของ Windows</li>
+        <li><strong style="color: var(--text-main);">แถบเครื่องมือคู่ บน-ล่าง:</strong> แยกแถบวาดเขียน (บน) และแถบคำสั่งใช้งาน (ล่าง) สะอาดตา ไม่บังพื้นที่ทำงาน</li>
+        <li><strong style="color: var(--text-main);">รองรับหลายจอ & High-DPI:</strong> คมชัดระดับพิกเซลบนจอ Scaling 125%, 150%, 200%</li>
+      </ul>
+    </div>
+
+    <!-- How to Use -->
+    <div class="card">
+      <h2>🚀 ขั้นตอนการใช้งานง่ายๆ</h2>
+      <div class="step-list">
+        <div class="step-item">
+          <strong>เปิดโปรแกรม</strong>: ดับเบิลคลิกไฟล์ <code>1ThaiAiCapture.exe</code> โปรแกรมจะไปรันรอใน System Tray (มุมขวาล่าง)
+        </div>
+        <div class="step-item">
+          <strong>กดปุ่มลัด</strong>: กดปุ่ม <kbd>F1</kbd> บนคีย์บอร์ดเมื่อใดก็ได้เพื่อเข้าสู่โหมดจับภาพ
+        </div>
+        <div class="step-item">
+          <strong>ลากพื้นที่</strong>: คลิกเมาส์ซ้ายค้างแล้วลากเพื่อตีกรอบพื้นที่ที่ต้องการแคป
+        </div>
+        <div class="step-item">
+          <strong>ปรับขนาดและย้ายกรอบ (Resize & Move)</strong>: คลิกลากจุดมุมทั้ง 4 หรือขอบทั้ง 4 เพื่อปรับขนาด หรือคลิกลากตรงกลางเพื่อย้ายตำแหน่งกรอบได้ทันทีก่อนคัดลอก
+        </div>
+        <div class="step-item">
+          <strong>วาดเขียนเน้นข้อความ (แถบด้านบน)</strong>:
+          <div class="toolbar-visual">
+            <div class="toolbar-box">
+              <span class="tool-chip">✏️ ปากกา</span>
+              <span class="tool-chip">➡️ ลูกศร</span>
+              <span class="tool-chip">🔲 กรอบ</span>
+              <span class="tool-chip">↩️ ย้อนกลับ</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">(แถบเครื่องมือวาดภาพจะลอยอยู่เหนือกรอบที่เลือก)</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <strong>คัดลอกหรือบันทึก (แถบด้านล่าง)</strong>:
+          <div class="toolbar-visual">
+            <div class="toolbar-box">
+              <span class="tool-chip blue">📋 คัดลอก</span>
+              <span class="tool-chip green">💾 บันทึก</span>
+              <span class="tool-chip purple">🌐 1ThaiAi</span>
+              <span class="tool-chip red">✕ ปิด</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">(กด <strong>คัดลอก</strong> เพื่อนำไปวางใน LINE/Word ได้ทันที หรือกด <strong>บันทึก</strong> เป็นไฟล์ PNG/JPG/BMP)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tray Menu -->
+    <div class="card">
+      <h2>⚙️ การตั้งค่าผ่านไอคอน System Tray</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1rem;">คุณสามารถ <strong>คลิกซ้าย หรือ คลิกขวา</strong> ที่ไอคอนโปรแกรมที่มุมขวาล่างเพื่อเปิดเมนูตั้งค่า:</p>
+      <div class="shortcut-grid">
+        <div class="shortcut-card">
+          <span>⚙️ เปลี่ยนปุ่มลัด (Hotkey)</span>
+          <span>F1, F2, F4, PrtScn, Ctrl+Shift+A</span>
+        </div>
+        <div class="shortcut-card">
+          <span>📁 ฟอร์แมตบันทึกเริ่มต้น</span>
+          <span>PNG (คมชัด) / JPG / BMP</span>
+        </div>
+        <div class="shortcut-card">
+          <span>🌐 สลับภาษา</span>
+          <span>🇹🇭 ภาษาไทย / 🇬🇧 English</span>
+        </div>
+        <div class="shortcut-card">
+          <span>🌐 ไปที่เว็บ</span>
+          <span>1ThaiAi.com</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shortcuts -->
+    <div class="card">
+      <h2>⌨️ สรุปปุ่มลัดคีย์บอร์ด</h2>
+      <div class="shortcut-grid">
+        <div class="shortcut-card">
+          <span>เริ่มจับภาพหน้าจอ</span>
+          <kbd>F1</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>คัดลอกภาพทันที</span>
+          <kbd>Enter</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>ย้อนกลับการวาด (Undo)</span>
+          <kbd>Ctrl + Z</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>ยกเลิก / ปิดหน้าจอ</span>
+          <kbd>Esc</kbd>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ENGLISH CONTENT -->
+  <div id="lang-en" class="content-en">
+    
+    <!-- Features -->
+    <div class="card">
+      <h2>✨ Key Features</h2>
+      <ul style="list-style: square; padding-left: 1.5rem; color: var(--text-muted);">
+        <li><strong style="color: var(--text-main);">Single Portable Executable:</strong> No installation required. Runs directly anywhere.</li>
+        <li><strong style="color: var(--text-main);">Zero RAM / CPU Footprint:</strong> Runs quietly in the System Tray using only ~15 MB RAM.</li>
+        <li><strong style="color: var(--text-main);">Smart Global Hotkey (F1):</strong> Uses Low-Level Keyboard Hook to suppress Windows Bing Help interference.</li>
+        <li><strong style="color: var(--text-main);">Dual Top & Bottom Toolbars:</strong> Drawing tools on Top and action buttons on Bottom for a clean workspace.</li>
+        <li><strong style="color: var(--text-main);">Multi-Monitor & High-DPI Ready:</strong> Crisp pixel-perfect capture on displays with 125%, 150%, 200% scaling.</li>
+      </ul>
+    </div>
+
+    <!-- How to Use -->
+    <div class="card">
+      <h2>🚀 Quick Start Guide</h2>
+      <div class="step-list">
+        <div class="step-item">
+          <strong>Start App</strong>: Double-click <code>1ThaiAiCapture.exe</code>. It sits quietly in your System Tray (bottom-right corner).
+        </div>
+        <div class="step-item">
+          <strong>Press Hotkey</strong>: Press <kbd>F1</kbd> anytime anywhere to enter capture mode.
+        </div>
+        <div class="step-item">
+          <strong>Drag Area</strong>: Click and drag to select any rectangle on your screen.
+        </div>
+        <div class="step-item">
+          <strong>Resize & Move Selection</strong>: Drag any of the 8 handles/borders to resize, or drag inside the box to reposition before copying or saving.
+        </div>
+        <div class="step-item">
+          <strong>Annotate (Top Toolbar)</strong>:
+          <div class="toolbar-visual">
+            <div class="toolbar-box">
+              <span class="tool-chip">✏️ Pen</span>
+              <span class="tool-chip">➡️ Arrow</span>
+              <span class="tool-chip">🔲 Box</span>
+              <span class="tool-chip">↩️ Undo</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">(Drawing tools float gracefully above your selection)</p>
+          </div>
+        </div>
+        <div class="step-item">
+          <strong>Export / Copy (Bottom Toolbar)</strong>:
+          <div class="toolbar-visual">
+            <div class="toolbar-box">
+              <span class="tool-chip blue">📋 Copy</span>
+              <span class="tool-chip green">💾 Save</span>
+              <span class="tool-chip purple">🌐 1ThaiAi</span>
+              <span class="tool-chip red">✕ Close</span>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 8px;">(Click <strong>Copy</strong> to paste into LINE/Slack/Docs, or <strong>Save</strong> as PNG/JPG/BMP)</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tray Menu -->
+    <div class="card">
+      <h2>⚙️ System Tray Settings</h2>
+      <p style="color: var(--text-muted); margin-bottom: 1rem;">You can <strong>Left-Click or Right-Click</strong> the tray icon to customize settings:</p>
+      <div class="shortcut-grid">
+        <div class="shortcut-card">
+          <span>⚙️ Hotkey Settings</span>
+          <span>F1, F2, F4, PrtScn, Ctrl+Shift+A</span>
+        </div>
+        <div class="shortcut-card">
+          <span>📁 Default Save Format</span>
+          <span>PNG (Lossless) / JPG / BMP</span>
+        </div>
+        <div class="shortcut-card">
+          <span>🌐 Language Switcher</span>
+          <span>🇹🇭 Thai / 🇬🇧 English</span>
+        </div>
+        <div class="shortcut-card">
+          <span>🌐 Visit Website</span>
+          <span>1ThaiAi.com</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Shortcuts -->
+    <div class="card">
+      <h2>⌨️ Keyboard Shortcuts</h2>
+      <div class="shortcut-grid">
+        <div class="shortcut-card">
+          <span>Start Screen Capture</span>
+          <kbd>F1</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>Copy to Clipboard</span>
+          <kbd>Enter</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>Undo Last Annotation</span>
+          <kbd>Ctrl + Z</kbd>
+        </div>
+        <div class="shortcut-card">
+          <span>Cancel & Close</span>
+          <kbd>Esc</kbd>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Footer -->
+  <div class="footer">
+    <p>พัฒนาโดยทีมงาน <strong><a href="https://1thaiai.com" target="_blank">1ThaiAi.com</a></strong> | Empowering Thai Innovation with AI</p>
+  </div>
+
+</div>
+
+<script>
+  function setLang(lang) {
+    if (lang === 'th') {
+      document.getElementById('lang-th').style.display = 'block';
+      document.getElementById('lang-en').style.display = 'none';
+      document.getElementById('btn-th').classList.add('active');
+      document.getElementById('btn-en').classList.remove('active');
+      document.getElementById('title').innerText = 'คู่มือการใช้งาน (User Manual)';
+      document.getElementById('subtitle').innerText = 'โปรแกรมจับภาพหน้าจอ Windows อัจฉริยะ ใช้งานง่าย เบาหวิว ไม่กินแรม';
+    } else {
+      document.getElementById('lang-th').style.display = 'none';
+      document.getElementById('lang-en').style.display = 'block';
+      document.getElementById('btn-en').classList.add('active');
+      document.getElementById('btn-th').classList.remove('active');
+      document.getElementById('title').innerText = 'User Manual & Guide';
+      document.getElementById('subtitle').innerText = 'Lightweight, Intelligent Windows Screen Capture Utility';
+    }
+  }
+</script>
+
+</body>
+</html>

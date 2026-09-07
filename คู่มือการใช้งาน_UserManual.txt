@@ -1,0 +1,99 @@
+================================================================================
+🎯 1ThaiAi Capture - คู่มือการใช้งาน (User Manual)
+โปรแกรมจับภาพหน้าจอ Windows อัจฉริยะ (Portable Screen Capture Utility)
+เว็บไซต์อย่างเป็นทางการ: https://1thaiai.com
+================================================================================
+
+[ 🇹🇭 ภาษาไทย - THAI GUIDE ]
+--------------------------------------------------------------------------------
+
+1. ภาพรวมของโปรแกรม:
+   "1ThaiAi Capture" เป็นโปรแกรมจับภาพหน้าจอขนาดเล็ก พกพาสะดวก (Single Portable .exe)
+   ไม่ต้องติดตั้ง รันนิ่งๆ ใน System Tray (มุมขวาล่างของจอ) กินแรมน้อย ไม่หน่วงเครื่อง
+
+2. วิธีเริ่มต้นใช้งาน:
+   - ดับเบิลคลิกเปิดไฟล์ "1ThaiAiCapture.exe"
+   - โปรแกรมจะไปทำงานอยู่ใน System Tray (มุมขวาล่าง ใกล้ๆ นาฬิกา) พร้อมไอคอนน่ารัก
+   - กดปุ่ม [ F1 ] บนคีย์บอร์ดเมื่อใดก็ได้ เพื่อเริ่มจับภาพหน้าจอทันที!
+
+3. วิธีจับภาพและแต่งภาพ:
+   - เมื่อกด F1 หน้าจอจะมืดลง ให้คลิกเมาส์ซ้ายค้างแล้วลากตีกรอบพื้นที่ที่ต้องการ
+   - [✨ ใหม่] ปรับขนาดและย้ายตำแหน่งกรอบได้อย่างอิสระ:
+     * นำเมาส์ไปชี้ที่จุดมุมทั้ง 4 หรือขอบทั้ง 4 ด้าน เพื่อคลิกลากย่อ/ขยายขนาดกรอบได้ตามใจ
+     * นำเมาส์ไปชี้ภายในกรอบ (เมาส์จะเปลี่ยนเป็นลูกศร 4 ทิศ) เพื่อคลิกลากย้ายตำแหน่งกรอบไปจุดอื่น
+   - เมื่อปล่อยเมาส์ จะมีแถบเครื่องมือ 2 แถบปรากฏขึ้น:
+     * แถบด้านบน (เครื่องมือวาด):
+       - ✏️ ปากกา : วาดเส้นอิสระสีแดงคมชัด
+       - ➡️ ลูกศร : ลากลูกศรชี้เน้นตำแหน่งสำคัญ
+       - 🔲 กรอบ : วาดกรอบสี่เหลี่ยมตีกรอบข้อความ
+       - ↩️ ย้อนกลับ : ยกเลิกการวาดล่าสุด (หรือกด Ctrl+Z)
+     * แถบด้านล่าง (คำสั่งใช้งาน):
+       - 📋 คัดลอก : คัดลอกภาพลง Clipboard เพื่อนำไปวางใน LINE/Word/Canva (กด Enter)
+       - 💾 บันทึก : บันทึกเป็นไฟล์รูปภาพ (PNG / JPG / BMP)
+       - 🌐 1ThaiAi : เปิดไปยังเว็บไซต์ https://1thaiai.com
+       - ✕ ปิด : ยกเลิกและปิดหน้าต่างจับภาพ (หรือกด Esc)
+
+4. การตั้งค่าโปรแกรม (คลิกซ้าย หรือ คลิกขวา ที่ไอคอนใน System Tray):
+   - 📸 จับภาพหน้าจอ (Capture) : สั่งแคปภาพทันที
+   - ⚙️ ตั้งค่าปุ่มลัด (Hotkey) : เลือกเปลี่ยนปุ่มลัดได้ (F1, F2, F4, PrtScn, Ctrl+Shift+A)
+   - 📁 ฟอร์แมตไฟล์ (Save Format) : เลือกฟอร์แมตเริ่มต้น PNG, JPG หรือ BMP
+   - 🌐 ภาษา (Language) : สลับภาษา ไทย 🇹🇭 / English 🇬🇧
+   - 🌐 1ThaiAi.com : ไปที่หน้าเว็บ 1ThaiAi
+   - ❌ Exit : ปิดโปรแกรมและออกจากระบบ
+
+5. ตารางสรุปปุ่มลัด (Keyboard Shortcuts):
+   - [ F1 ]          : เริ่มจับภาพหน้าจอทันที (Global Shortcut)
+   - [ Enter ]       : คัดลอกภาพลงคลิปบอร์ดทันที (ขณะเลือกพื้นที่)
+   - [ Ctrl + Z ]    : ย้อนกลับการวาดล่าสุด (Undo)
+   - [ Esc ]         : ยกเลิกและปิดหน้าต่างจับภาพ (หรือคลิกขวา)
+
+================================================================================
+
+[ 🇬🇧 ENGLISH - USER MANUAL ]
+--------------------------------------------------------------------------------
+
+1. Overview:
+   "1ThaiAi Capture" is a lightweight, portable Windows Screen Capture utility.
+   Runs silently in the System Tray with zero background CPU/RAM footprint.
+
+2. Getting Started:
+   - Double-click "1ThaiAiCapture.exe" to start.
+   - The app runs in the Windows System Tray (bottom-right corner near the clock).
+   - Press [ F1 ] anywhere on your keyboard to instantly start capturing!
+
+3. Capturing & Annotating:
+   - Press F1 to enter dimmed overlay mode.
+   - Click and drag with the left mouse button to select any screen region.
+   - [✨ NEW] Interactive Box Resizing & Moving:
+     * Hover over any of the 8 handles/borders to drag and resize the capture region.
+     * Hover inside the selection box (cursor becomes 4-way arrow) to drag and move the whole box.
+   - Dual floating toolbars will appear:
+     * Top Toolbar (Drawing Tools):
+       - ✏️ Pen       : Draw freehand smooth red lines
+       - ➡️ Arrow     : Draw prominent directional arrowheads
+       - 🔲 Box       : Draw neat rectangle highlight boxes
+       - ↩️ Undo      : Revert last drawing action (Ctrl+Z)
+     * Bottom Toolbar (Actions):
+       - 📋 Copy      : Copy screenshot with annotations to Clipboard (Enter)
+       - 💾 Save      : Save screenshot as PNG, JPG, or BMP file
+       - 🌐 1ThaiAi   : Visit official website https://1thaiai.com
+       - ✕ Close     : Cancel and exit overlay (Esc)
+
+4. Tray Settings (Left-click or Right-click Tray Icon):
+   - 📸 Capture Screen    : Trigger instant screen capture
+   - ⚙️ Hotkey Settings   : Choose preferred hotkey (F1, F2, F4, PrtScn, Ctrl+Shift+A)
+   - 📁 Save Image Format : Set default format to PNG (Lossless), JPG, or BMP
+   - 🌐 Language          : Switch language (Thai 🇹🇭 / English 🇬🇧)
+   - 🌐 1ThaiAi.com       : Open official website
+   - ❌ Exit              : Exit application and restore hotkeys
+
+5. Shortcut Keys Reference:
+   - [ F1 ]          : Start screen capture anywhere
+   - [ Enter ]       : Copy screenshot to Clipboard
+   - [ Ctrl + Z ]    : Undo last annotation
+   - [ Esc ]         : Cancel and exit capture mode (or right-click)
+
+================================================================================
+พัฒนาโดยทีมงาน 1ThaiAi (Developed by 1ThaiAi Team)
+Official Website: https://1thaiai.com
+================================================================================
