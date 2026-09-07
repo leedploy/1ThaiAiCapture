@@ -1825,14 +1825,41 @@ namespace ThaiAiCapture
 
         private void PerformCopy()
         {
-            using (Bitmap cropped = GetSelectedCroppedImage())
+            Bitmap cropped = GetSelectedCroppedImage();
+            if (cropped != null)
             {
-                if (cropped != null)
-                {
-                    Clipboard.SetImage(cropped);
-                }
+                CopyImageToClipboard(cropped);
             }
             CloseOverlay();
+        }
+
+        private void CopyImageToClipboard(Bitmap bitmap)
+        {
+            try
+            {
+                DataObject data = new DataObject();
+
+                // 1. Standard Bitmap format for desktop applications (Word, Excel, PowerPoint, Paint)
+                data.SetData(DataFormats.Bitmap, true, bitmap);
+
+                // 2. PNG Stream format for web browsers & modern web apps (Chrome, Edge, Google Docs, Discord, Slack)
+                // Note: Keep MemoryStream alive so OLE clipboard reader can stream PNG bytes reliably
+                MemoryStream ms = new MemoryStream();
+                bitmap.Save(ms, ImageFormat.Png);
+                data.SetData("PNG", false, ms);
+
+                // Persist data in clipboard with copy: true and retry mechanism
+                Clipboard.SetDataObject(data, true, 3, 100);
+            }
+            catch
+            {
+                // Fallback if DataObject encounters unexpected errors
+                try
+                {
+                    Clipboard.SetDataObject(bitmap, true, 3, 100);
+                }
+                catch { }
+            }
         }
 
         private void PerformSave()
