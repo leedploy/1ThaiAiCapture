@@ -1,5 +1,5 @@
 ================================================================================
-🎯 1ThaiAi Capture - คู่มือการใช้งาน (User Manual)
+🎯 1ThaiAi Capture v1.3 - คู่มือการใช้งาน (User Manual)
 โปรแกรมจับภาพหน้าจอ Windows อัจฉริยะ (Portable Screen Capture Utility)
 เว็บไซต์อย่างเป็นทางการ: https://1thaiai.com
 ================================================================================
@@ -10,9 +10,10 @@
 1. ภาพรวมของโปรแกรม:
    "1ThaiAi Capture" เป็นโปรแกรมจับภาพหน้าจอขนาดเล็ก พกพาสะดวก (Single Portable .exe)
    ไม่ต้องติดตั้ง รันนิ่งๆ ใน System Tray (มุมขวาล่างของจอ) กินแรมน้อย ไม่หน่วงเครื่อง
+   รองรับระบบปุ่มลัด Windows RegisterHotKey ปลอดภัย 100% และจำการตั้งค่าอัตโนมัติ
 
 2. วิธีเริ่มต้นใช้งาน:
-   - ดับเบิลคลิกเปิดไฟล์ "1ThaiAiCapture.exe"
+   - ดับเบิลคลิกเปิดไฟล์ "ThaiAiCapture.exe" (หรือ "1ThaiAiCapture.exe")
    - โปรแกรมจะไปทำงานอยู่ใน System Tray (มุมขวาล่าง ใกล้ๆ นาฬิกา) พร้อมไอคอนน่ารัก
    - กดปุ่ม [ F1 ] บนคีย์บอร์ดเมื่อใดก็ได้ เพื่อเริ่มจับภาพหน้าจอทันที!
 
@@ -38,6 +39,7 @@
    - ⚙️ ตั้งค่าปุ่มลัด (Hotkey) : เลือกเปลี่ยนปุ่มลัดได้ (F1, F2, F4, PrtScn, Ctrl+Shift+A)
    - 📁 ฟอร์แมตไฟล์ (Save Format) : เลือกฟอร์แมตเริ่มต้น PNG, JPG หรือ BMP
    - 🌐 ภาษา (Language) : สลับภาษา ไทย 🇹🇭 / English 🇬🇧
+   - 💾 จำค่าอัตโนมัติ : จำปุ่มลัด, ฟอร์แมตไฟล์ และภาษาให้อัตโนมัติใน %LocalAppData%
    - 🌐 1ThaiAi.com : ไปที่หน้าเว็บ 1ThaiAi
    - ❌ Exit : ปิดโปรแกรมและออกจากระบบ
 
@@ -55,9 +57,10 @@
 1. Overview:
    "1ThaiAi Capture" is a lightweight, portable Windows Screen Capture utility.
    Runs silently in the System Tray with zero background CPU/RAM footprint.
+   Supports official Windows RegisterHotKey API and Persistent Settings auto-save.
 
 2. Getting Started:
-   - Double-click "1ThaiAiCapture.exe" to start.
+   - Double-click "ThaiAiCapture.exe" (or "1ThaiAiCapture.exe") to start.
    - The app runs in the Windows System Tray (bottom-right corner near the clock).
    - Press [ F1 ] anywhere on your keyboard to instantly start capturing!
 

@@ -267,7 +267,7 @@
     <div class="logo-badge">
       <span>🎯 1ThaiAi Capture</span>
       <span>•</span>
-      <span>v1.0 Portable</span>
+      <span>v1.3 Portable</span>
     </div>
     <h1 id="title">คู่มือการใช้งาน (User Manual)</h1>
     <p class="subtitle" id="subtitle">โปรแกรมจับภาพหน้าจอ Windows อัจฉริยะ ใช้งานง่าย เบาหวิว ไม่กินแรม</p>
@@ -287,7 +287,8 @@
       <ul style="list-style: square; padding-left: 1.5rem; color: var(--text-muted);">
         <li><strong style="color: var(--text-main);">ไฟล์เดียวจบ (Portable .exe):</strong> ไม่ต้องติดตั้ง ดับเบิลคลิกเปิดใช้งานได้ทันที</li>
         <li><strong style="color: var(--text-main);">ไม่ดูดแรม ไม่กิน CPU (0% Idle):</strong> รันนิ่งๆ ใน System Tray ใช้แรมเพียง ~15 MB</li>
-        <li><strong style="color: var(--text-main);">ปุ่มลัด F1 อัจฉริยะ:</strong> ใช้ Low-Level Keyboard Hook ป้องกันไม่ให้ชนกับระบบ Bing Help ของ Windows</li>
+        <li><strong style="color: var(--text-main);">ปุ่มลัด Windows RegisterHotKey ปลอดภัยสูงสุด:</strong> ใช้ระบบลงทะเบียนมาตรฐานของ Windows ปลอดภัย 100% ไม่โดน Antivirus บล็อก</li>
+        <li><strong style="color: var(--text-main);">จำการตั้งค่าอัตโนมัติ (Persistent Settings):</strong> จำค่าปุ่มลัด, ฟอร์แมตไฟล์ (PNG/JPG/BMP) และภาษาที่เลือกไว้ เปิดเครื่องใหม่ไม่ต้องตั้งค่าซ้ำ</li>
         <li><strong style="color: var(--text-main);">แถบเครื่องมือคู่ บน-ล่าง:</strong> แยกแถบวาดเขียน (บน) และแถบคำสั่งใช้งาน (ล่าง) สะอาดตา ไม่บังพื้นที่ทำงาน</li>
         <li><strong style="color: var(--text-main);">รองรับหลายจอ & High-DPI:</strong> คมชัดระดับพิกเซลบนจอ Scaling 125%, 150%, 200%</li>
       </ul>
@@ -298,7 +299,7 @@
       <h2>🚀 ขั้นตอนการใช้งานง่ายๆ</h2>
       <div class="step-list">
         <div class="step-item">
-          <strong>เปิดโปรแกรม</strong>: ดับเบิลคลิกไฟล์ <code>1ThaiAiCapture.exe</code> โปรแกรมจะไปรันรอใน System Tray (มุมขวาล่าง)
+          <strong>เปิดโปรแกรม</strong>: ดับเบิลคลิกไฟล์ <code>ThaiAiCapture.exe</code> (หรือ <code>1ThaiAiCapture.exe</code>) โปรแกรมจะไปรันรอใน System Tray (มุมขวาล่าง)
         </div>
         <div class="step-item">
           <strong>กดปุ่มลัด</strong>: กดปุ่ม <kbd>F1</kbd> บนคีย์บอร์ดเมื่อใดก็ได้เพื่อเข้าสู่โหมดจับภาพ
@@ -394,7 +395,8 @@
       <ul style="list-style: square; padding-left: 1.5rem; color: var(--text-muted);">
         <li><strong style="color: var(--text-main);">Single Portable Executable:</strong> No installation required. Runs directly anywhere.</li>
         <li><strong style="color: var(--text-main);">Zero RAM / CPU Footprint:</strong> Runs quietly in the System Tray using only ~15 MB RAM.</li>
-        <li><strong style="color: var(--text-main);">Smart Global Hotkey (F1):</strong> Uses Low-Level Keyboard Hook to suppress Windows Bing Help interference.</li>
+        <li><strong style="color: var(--text-main);">Official Windows RegisterHotKey API:</strong> Registered cleanly with Windows. Completely safe and immune to antivirus false positives.</li>
+        <li><strong style="color: var(--text-main);">Persistent Settings Auto-Save:</strong> Automatically remembers your Hotkey, Save Format (PNG/JPG/BMP), and Language preferences across restarts.</li>
         <li><strong style="color: var(--text-main);">Dual Top & Bottom Toolbars:</strong> Drawing tools on Top and action buttons on Bottom for a clean workspace.</li>
         <li><strong style="color: var(--text-main);">Multi-Monitor & High-DPI Ready:</strong> Crisp pixel-perfect capture on displays with 125%, 150%, 200% scaling.</li>
       </ul>
@@ -405,7 +407,7 @@
       <h2>🚀 Quick Start Guide</h2>
       <div class="step-list">
         <div class="step-item">
-          <strong>Start App</strong>: Double-click <code>1ThaiAiCapture.exe</code>. It sits quietly in your System Tray (bottom-right corner).
+          <strong>Start App</strong>: Double-click <code>ThaiAiCapture.exe</code> (or <code>1ThaiAiCapture.exe</code>). It sits quietly in your System Tray (bottom-right corner).
         </div>
         <div class="step-item">
           <strong>Press Hotkey</strong>: Press <kbd>F1</kbd> anytime anywhere to enter capture mode.
