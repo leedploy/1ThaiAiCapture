@@ -6,6 +6,7 @@ using System.Drawing.Imaging;
 using System.IO;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -69,6 +70,123 @@ namespace ThaiAiCapture
         BMP
     }
 
+    public enum ShortcutMode
+    {
+        F1,
+        F2,
+        F4,
+        PrintScreen,
+        CtrlShiftA
+    }
+
+    /// <summary>
+    /// User configurable settings persisted to %LocalAppData%\1ThaiAiCapture\settings.json
+    /// </summary>
+    public class UserSettings
+    {
+        public ShortcutMode Hotkey = ShortcutMode.F1;
+        public ImageSaveFormat SaveFormat = ImageSaveFormat.PNG;
+        public AppLanguage Language = AppLanguage.Thai;
+    }
+
+    /// <summary>
+    /// Robust, zero-dependency Settings Manager saving JSON configuration to %LocalAppData%
+    /// </summary>
+    public static class SettingsManager
+    {
+        private static readonly string SettingsDirectory = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData),
+            "1ThaiAiCapture"
+        );
+        private static readonly string SettingsFilePath = Path.Combine(SettingsDirectory, "settings.json");
+
+        public static UserSettings Load()
+        {
+            UserSettings settings = new UserSettings();
+            try
+            {
+                if (File.Exists(SettingsFilePath))
+                {
+                    string json = File.ReadAllText(SettingsFilePath, System.Text.Encoding.UTF8);
+
+                    string hotkeyStr = ExtractJsonValue(json, "Hotkey");
+                    if (!string.IsNullOrEmpty(hotkeyStr))
+                    {
+                        try
+                        {
+                            settings.Hotkey = (ShortcutMode)Enum.Parse(typeof(ShortcutMode), hotkeyStr, true);
+                        }
+                        catch { }
+                    }
+
+                    string formatStr = ExtractJsonValue(json, "SaveFormat");
+                    if (!string.IsNullOrEmpty(formatStr))
+                    {
+                        try
+                        {
+                            settings.SaveFormat = (ImageSaveFormat)Enum.Parse(typeof(ImageSaveFormat), formatStr, true);
+                        }
+                        catch { }
+                    }
+
+                    string langStr = ExtractJsonValue(json, "Language");
+                    if (!string.IsNullOrEmpty(langStr))
+                    {
+                        try
+                        {
+                            settings.Language = (AppLanguage)Enum.Parse(typeof(AppLanguage), langStr, true);
+                        }
+                        catch { }
+                    }
+                }
+            }
+            catch
+            {
+                // In case of any I/O or parsing errors, safely keep defaults
+            }
+            return settings;
+        }
+
+        public static void Save(ShortcutMode hotkey, ImageSaveFormat format, AppLanguage language)
+        {
+            try
+            {
+                if (!Directory.Exists(SettingsDirectory))
+                {
+                    Directory.CreateDirectory(SettingsDirectory);
+                }
+
+                string json = string.Format(
+                    "{{\n  \"Hotkey\": \"{0}\",\n  \"SaveFormat\": \"{1}\",\n  \"Language\": \"{2}\"\n}}",
+                    hotkey.ToString(),
+                    format.ToString(),
+                    language.ToString()
+                );
+
+                File.WriteAllText(SettingsFilePath, json, System.Text.Encoding.UTF8);
+            }
+            catch
+            {
+                // Silently ignore disk write issues to prevent disrupting user experience
+            }
+        }
+
+        private static string ExtractJsonValue(string json, string key)
+        {
+            try
+            {
+                string pattern = "\"" + key + "\"\\s*:\\s*\"([^\"]+)\"";
+                Match match = Regex.Match(json, pattern);
+                if (match.Success && match.Groups.Count > 1)
+                {
+                    return match.Groups[1].Value.Trim();
+                }
+            }
+            catch { }
+            return null;
+        }
+    }
+
     /// <summary>
     /// Background Application Context managing System Tray, Global Low-Level Keyboard Hook, and Multi-language support
     /// </summary>
@@ -78,7 +196,7 @@ namespace ThaiAiCapture
         public static ImageSaveFormat DefaultFormat = ImageSaveFormat.PNG;
 
         private readonly NotifyIcon _notifyIcon;
-        private readonly GlobalKeyboardHook _keyboardHook;
+        private readonly GlobalHotKeyManager _hotKeyManager;
         private CaptureOverlayForm _currentOverlay;
         private const string WEBSITE_URL = "https://1thaiai.com";
 
@@ -98,6 +216,16 @@ namespace ThaiAiCapture
 
         public TrayAppContext()
         {
+            // Load saved user settings
+            UserSettings settings = SettingsManager.Load();
+            CurrentLanguage = settings.Language;
+            DefaultFormat = settings.SaveFormat;
+
+            // Initialize Global HotKey Manager (RegisterHotKey API) before menu creation
+            _hotKeyManager = new GlobalHotKeyManager();
+            _hotKeyManager.Triggered += TriggerCapture;
+            _hotKeyManager.CurrentMode = settings.Hotkey;
+
             // Create Context Menu for Tray Icon
             ContextMenuStrip contextMenu = new ContextMenuStrip();
             contextMenu.Font = new Font("Segoe UI", 9.5f, FontStyle.Regular);
@@ -146,11 +274,12 @@ namespace ThaiAiCapture
 
             // Create Tray Icon
             Icon appIcon = CreateAppIcon();
+            string initialKey = (_hotKeyManager.CurrentMode == ShortcutMode.CtrlShiftA) ? "Ctrl+Shift+A" : _hotKeyManager.CurrentMode.ToString();
             _notifyIcon = new NotifyIcon
             {
                 Icon = appIcon,
                 ContextMenuStrip = contextMenu,
-                Text = "1ThaiAi Capture (กด F1 เพื่อจับภาพ)",
+                Text = string.Format("1ThaiAi Capture (กด {0} เพื่อจับภาพ)", initialKey),
                 Visible = true
             };
 
@@ -180,17 +309,15 @@ namespace ThaiAiCapture
 
             _notifyIcon.DoubleClick += (s, e) => TriggerCapture();
 
-            // Initialize Global Keyboard Hook (WH_KEYBOARD_LL)
-            _keyboardHook = new GlobalKeyboardHook();
-            _keyboardHook.Triggered += TriggerCapture;
-
             // Apply initial language labels
             UpdateLanguageUI();
 
             _notifyIcon.ShowBalloonTip(
                 2500,
-                "1ThaiAi Capture พร้อมใช้งาน",
-                "กดปุ่ม [ F1 ] บนคีย์บอร์ดเมื่อใดก็ได้เพื่อเริ่มจับภาพหน้าจอ",
+                CurrentLanguage == AppLanguage.Thai ? "1ThaiAi Capture พร้อมใช้งาน" : "1ThaiAi Capture is Ready",
+                CurrentLanguage == AppLanguage.Thai
+                    ? string.Format("กดปุ่ม [ {0} ] บนคีย์บอร์ดเมื่อใดก็ได้เพื่อเริ่มจับภาพหน้าจอ", initialKey)
+                    : string.Format("Press [ {0} ] on your keyboard anytime to capture screen", initialKey),
                 ToolTipIcon.Info
             );
         }
@@ -212,6 +339,7 @@ namespace ThaiAiCapture
         {
             DefaultFormat = format;
             UpdateFormatCheckmarks();
+            SettingsManager.Save(_hotKeyManager != null ? _hotKeyManager.CurrentMode : ShortcutMode.F1, DefaultFormat, CurrentLanguage);
         }
 
         private void UpdateFormatCheckmarks()
@@ -237,6 +365,7 @@ namespace ThaiAiCapture
         {
             CurrentLanguage = lang;
             UpdateLanguageUI();
+            SettingsManager.Save(_hotKeyManager != null ? _hotKeyManager.CurrentMode : ShortcutMode.F1, DefaultFormat, CurrentLanguage);
         }
 
         private void UpdateLanguageUI()
@@ -244,7 +373,7 @@ namespace ThaiAiCapture
             if (_langThaiItem != null) _langThaiItem.Checked = (CurrentLanguage == AppLanguage.Thai);
             if (_langEngItem != null) _langEngItem.Checked = (CurrentLanguage == AppLanguage.English);
 
-            string currentKey = (_keyboardHook != null && _keyboardHook.CurrentMode == GlobalKeyboardHook.ShortcutMode.CtrlShiftA) ? "Ctrl+Shift+A" : (_keyboardHook != null ? _keyboardHook.CurrentMode.ToString() : "F1");
+            string currentKey = (_hotKeyManager != null && _hotKeyManager.CurrentMode == ShortcutMode.CtrlShiftA) ? "Ctrl+Shift+A" : (_hotKeyManager != null ? _hotKeyManager.CurrentMode.ToString() : "F1");
 
             if (CurrentLanguage == AppLanguage.Thai)
             {
@@ -299,27 +428,27 @@ namespace ThaiAiCapture
         {
             var options = new[]
             {
-                new { Mode = GlobalKeyboardHook.ShortcutMode.F1, Label = "F1 (ค่าเริ่มต้น)" },
-                new { Mode = GlobalKeyboardHook.ShortcutMode.F2, Label = "F2" },
-                new { Mode = GlobalKeyboardHook.ShortcutMode.F4, Label = "F4" },
-                new { Mode = GlobalKeyboardHook.ShortcutMode.PrintScreen, Label = "PrintScreen (PrtScn)" },
-                new { Mode = GlobalKeyboardHook.ShortcutMode.CtrlShiftA, Label = "Ctrl + Shift + A" }
+                new { Mode = ShortcutMode.F1, Label = "F1 (ค่าเริ่มต้น)" },
+                new { Mode = ShortcutMode.F2, Label = "F2" },
+                new { Mode = ShortcutMode.F4, Label = "F4" },
+                new { Mode = ShortcutMode.PrintScreen, Label = "PrintScreen (PrtScn)" },
+                new { Mode = ShortcutMode.CtrlShiftA, Label = "Ctrl + Shift + A" }
             };
 
             foreach (var opt in options)
             {
                 ToolStripMenuItem item = new ToolStripMenuItem(opt.Label);
                 var mode = opt.Mode;
-                item.Checked = (_keyboardHook != null && _keyboardHook.CurrentMode == mode) || (mode == GlobalKeyboardHook.ShortcutMode.F1);
+                item.Checked = (_hotKeyManager != null && _hotKeyManager.CurrentMode == mode);
 
                 item.Click += (s, e) =>
                 {
-                    _keyboardHook.CurrentMode = mode;
+                    _hotKeyManager.CurrentMode = mode;
                     foreach (ToolStripMenuItem sibling in parentMenu.DropDownItems)
                     {
                         sibling.Checked = (sibling == item);
                     }
-                    string keyName = mode == GlobalKeyboardHook.ShortcutMode.CtrlShiftA ? "Ctrl+Shift+A" : mode.ToString();
+                    string keyName = mode == ShortcutMode.CtrlShiftA ? "Ctrl+Shift+A" : mode.ToString();
                     if (CurrentLanguage == AppLanguage.Thai)
                     {
                         _notifyIcon.Text = string.Format("1ThaiAi Capture (กด {0} เพื่อจับภาพ)", keyName);
@@ -328,6 +457,7 @@ namespace ThaiAiCapture
                     {
                         _notifyIcon.Text = string.Format("1ThaiAi Capture (Press {0} to capture)", keyName);
                     }
+                    SettingsManager.Save(_hotKeyManager.CurrentMode, DefaultFormat, CurrentLanguage);
                 };
 
                 parentMenu.DropDownItems.Add(item);
@@ -383,9 +513,9 @@ namespace ThaiAiCapture
 
         private void ExitApplication()
         {
-            if (_keyboardHook != null)
+            if (_hotKeyManager != null)
             {
-                _keyboardHook.Dispose();
+                _hotKeyManager.Dispose();
             }
             _notifyIcon.Visible = false;
             _notifyIcon.Dispose();
@@ -537,131 +667,147 @@ namespace ThaiAiCapture
     }
 
     /// <summary>
-    /// Global Low-Level Keyboard Hook (WH_KEYBOARD_LL)
-    /// Intercepts and SUPPRESSES the hotkey so Windows/Apps never trigger default handlers (e.g. Bing Help on F1)
+    /// Safe, official Windows RegisterHotKey API Manager.
+    /// Does NOT hook keyboard or scan all keystrokes, completely avoiding antivirus keylogger false positives (IDP.generic).
     /// </summary>
-    public class GlobalKeyboardHook : IDisposable
+    public class GlobalHotKeyManager : IDisposable
     {
-        private const int WH_KEYBOARD_LL = 13;
-        private const int WM_KEYDOWN = 0x0100;
-        private const int WM_SYSKEYDOWN = 0x0104;
-
-        private delegate IntPtr LowLevelKeyboardProc(int nCode, IntPtr wParam, IntPtr lParam);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr SetWindowsHookEx(int idHook, LowLevelKeyboardProc lpfn, IntPtr hMod, uint dwThreadId);
-
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
+        [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
-        private static extern bool UnhookWindowsHookEx(IntPtr hhk);
+        private static extern bool RegisterHotKey(IntPtr hWnd, int id, uint fsModifiers, uint vk);
 
-        [DllImport("user32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr CallNextHookEx(IntPtr hhk, int nCode, IntPtr wParam, IntPtr lParam);
+        [DllImport("user32.dll", SetLastError = true)]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        private static extern bool UnregisterHotKey(IntPtr hWnd, int id);
 
-        [DllImport("kernel32.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        private static extern IntPtr GetModuleHandle(string lpModuleName);
+        // Modifiers
+        private const uint MOD_NONE = 0x0000;
+        private const uint MOD_ALT = 0x0001;
+        private const uint MOD_CONTROL = 0x0002;
+        private const uint MOD_SHIFT = 0x0004;
+        private const uint MOD_NOREPEAT = 0x4000; // Prevents multiple hotkey notifications when key is held down
 
-        [DllImport("user32.dll")]
-        private static extern short GetAsyncKeyState(int vKey);
+        private const int HOTKEY_ID = 9001;
 
-        private readonly LowLevelKeyboardProc _proc;
-        private IntPtr _hookID = IntPtr.Zero;
-        private readonly SynchronizationContext _syncContext;
+        private readonly HotKeyMessageWindow _window;
+        private bool _isRegistered = false;
+        private ShortcutMode _currentMode = ShortcutMode.F1;
 
         public event Action Triggered;
 
-        public enum ShortcutMode
+        public ShortcutMode CurrentMode
         {
-            F1,
-            F2,
-            F4,
-            PrintScreen,
-            CtrlShiftA
-        }
-
-        public ShortcutMode CurrentMode { get; set; }
-
-        public GlobalKeyboardHook()
-        {
-            _syncContext = SynchronizationContext.Current ?? new WindowsFormsSynchronizationContext();
-            CurrentMode = ShortcutMode.F1;
-            _proc = HookCallback;
-            _hookID = SetHook(_proc);
-        }
-
-        private IntPtr SetHook(LowLevelKeyboardProc proc)
-        {
-            using (Process curProcess = Process.GetCurrentProcess())
-            using (ProcessModule curModule = curProcess.MainModule)
+            get { return _currentMode; }
+            set
             {
-                return SetWindowsHookEx(WH_KEYBOARD_LL, proc, GetModuleHandle(curModule.ModuleName), 0);
+                _currentMode = value;
+                RegisterCurrent();
             }
         }
 
-        private IntPtr HookCallback(int nCode, IntPtr wParam, IntPtr lParam)
+        public GlobalHotKeyManager()
         {
-            if (nCode >= 0)
+            _window = new HotKeyMessageWindow();
+            _window.HotKeyPressed += delegate
             {
-                int msg = wParam.ToInt32();
-                if (msg == WM_KEYDOWN || msg == WM_SYSKEYDOWN)
+                Action handler = Triggered;
+                if (handler != null)
                 {
-                    int vkCode = Marshal.ReadInt32(lParam);
-                    bool match = false;
-
-                    switch (CurrentMode)
-                    {
-                        case ShortcutMode.F1:
-                            match = (vkCode == (int)Keys.F1);
-                            break;
-                        case ShortcutMode.F2:
-                            match = (vkCode == (int)Keys.F2);
-                            break;
-                        case ShortcutMode.F4:
-                            match = (vkCode == (int)Keys.F4);
-                            break;
-                        case ShortcutMode.PrintScreen:
-                            match = (vkCode == (int)Keys.PrintScreen || vkCode == 44);
-                            break;
-                        case ShortcutMode.CtrlShiftA:
-                            if (vkCode == (int)Keys.A)
-                            {
-                                bool ctrl = (GetAsyncKeyState((int)Keys.ControlKey) & 0x8000) != 0;
-                                bool shift = (GetAsyncKeyState((int)Keys.ShiftKey) & 0x8000) != 0;
-                                match = (ctrl && shift);
-                            }
-                            break;
-                    }
-
-                    if (match)
-                    {
-                        // Asynchronously trigger capture on UI message loop
-                        if (_syncContext != null)
-                        {
-                            _syncContext.Post(delegate
-                            {
-                                if (Triggered != null)
-                                {
-                                    Triggered();
-                                }
-                            }, null);
-                        }
-
-                        // RETURN 1 to EAT / SUPPRESS KEYPRESS!
-                        // This prevents Windows or any foreground application from opening Bing Help!
-                        return (IntPtr)1;
-                    }
+                    handler();
                 }
+            };
+        }
+
+        public void RegisterCurrent()
+        {
+            Unregister();
+
+            uint modifiers = MOD_NOREPEAT;
+            uint vk = 0;
+
+            switch (_currentMode)
+            {
+                case ShortcutMode.F1:
+                    vk = (uint)Keys.F1;
+                    break;
+                case ShortcutMode.F2:
+                    vk = (uint)Keys.F2;
+                    break;
+                case ShortcutMode.F4:
+                    vk = (uint)Keys.F4;
+                    break;
+                case ShortcutMode.PrintScreen:
+                    vk = (uint)Keys.PrintScreen;
+                    break;
+                case ShortcutMode.CtrlShiftA:
+                    modifiers = MOD_CONTROL | MOD_SHIFT | MOD_NOREPEAT;
+                    vk = (uint)Keys.A;
+                    break;
+                default:
+                    vk = (uint)Keys.F1;
+                    break;
             }
 
-            return CallNextHookEx(_hookID, nCode, wParam, lParam);
+            // Attempt registration with MOD_NOREPEAT
+            bool success = RegisterHotKey(_window.Handle, HOTKEY_ID, modifiers, vk);
+            if (!success)
+            {
+                // Fallback without MOD_NOREPEAT if older Windows environment doesn't support it
+                success = RegisterHotKey(_window.Handle, HOTKEY_ID, modifiers & ~MOD_NOREPEAT, vk);
+            }
+
+            _isRegistered = success;
+        }
+
+        public void Unregister()
+        {
+            if (_isRegistered && _window.Handle != IntPtr.Zero)
+            {
+                try
+                {
+                    UnregisterHotKey(_window.Handle, HOTKEY_ID);
+                }
+                catch { }
+                _isRegistered = false;
+            }
         }
 
         public void Dispose()
         {
-            if (_hookID != IntPtr.Zero)
+            Unregister();
+            _window.Dispose();
+        }
+
+        private class HotKeyMessageWindow : NativeWindow, IDisposable
+        {
+            private const int WM_HOTKEY = 0x0312;
+            public event Action HotKeyPressed;
+
+            public HotKeyMessageWindow()
             {
-                UnhookWindowsHookEx(_hookID);
-                _hookID = IntPtr.Zero;
+                CreateHandle(new CreateParams());
+            }
+
+            protected override void WndProc(ref Message m)
+            {
+                if (m.Msg == WM_HOTKEY)
+                {
+                    if (m.WParam.ToInt32() == HOTKEY_ID)
+                    {
+                        Action handler = HotKeyPressed;
+                        if (handler != null)
+                        {
+                            handler();
+                        }
+                        return;
+                    }
+                }
+                base.WndProc(ref m);
+            }
+
+            public void Dispose()
+            {
+                DestroyHandle();
             }
         }
     }
